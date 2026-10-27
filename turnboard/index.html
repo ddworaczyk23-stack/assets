@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!--
+    TurnBoard frame page (2026-10-27).
+
+    Google prints "This application was created by a Google Apps Script user"
+    across the top of the web app when it serves it directly, and not when the
+    app sits inside another site's frame. This page is that frame. It holds no
+    data and no secrets; the app itself still runs on Google.
+
+    To host it somewhere new (for example on the company's own site):
+      1. Copy this one file there. It must be served over https.
+      2. Set WEB_APP_URL below to the web app deployment the phones use
+         (Manage deployments, the one WITHOUT "@HEAD").
+      3. Set the library Script Property WEB_APP_FRAME_URL to this page's
+         address, then refresh the Link column. Links then point here, and the
+         web app lets only this site frame it.
+      4. Change the apple-touch-icon below if the icon moves.
+
+    The token arrives after "#" (link#t=...), which a browser never sends to a
+    server, so whoever hosts this page never sees it. It is passed on to Google
+    exactly as a direct link would pass it.
+  -->
+  <meta charset="utf-8">
+  <!-- No viewport-fit=cover: the app inside cannot read the notch's safe-area
+       insets through a frame, so this page keeps the frame clear of them. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>TurnBoard</title>
+  <meta name="apple-mobile-web-app-title" content="TurnBoard">
+  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/ddworaczyk23-stack/assets/main/turnboard-icon-180.png">
+  <style>
+    :root { color-scheme: light dark; }
+    html, body { margin: 0; height: 100%; background: Canvas; }
+    iframe { display: block; border: 0; width: 100%; height: 100%; }
+    p { margin: 0; padding: 24px; font: 16px -apple-system, system-ui, sans-serif; }
+  </style>
+</head>
+<body>
+  <script>
+    var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwWQ0UDQDMT6PYpAKl-gVGgWRUeCTcoMzCPjGqS1JpJx4XcFHBQfEJmvwQG94GFKwfgFg/exec';
+
+    (function () {
+      var params = new URLSearchParams(window.location.hash.slice(1));
+      var token = params.get('t') || '';
+      var view = params.get('v') || '';
+      if (!token) {
+        document.body.innerHTML = '<p>Open TurnBoard from your own TurnBoard link.</p>';
+        return;
+      }
+      var frame = document.createElement('iframe');
+      frame.title = 'TurnBoard';
+      frame.referrerPolicy = 'no-referrer';
+      frame.src = WEB_APP_URL + '?t=' + encodeURIComponent(token) +
+        (view ? '&v=' + encodeURIComponent(view) : '');
+      document.body.appendChild(frame);
+    })();
+
+    // A new link opened while this page is up changes only the part after #,
+    // which does not reload a page by itself.
+    window.addEventListener('hashchange', function () { window.location.reload(); });
+  </script>
+</body>
+</html>
